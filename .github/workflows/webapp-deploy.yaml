@@ -1,4 +1,4 @@
-name: Build and Deploy for Python service
+name: Build and Deploy for webapp service
 
 on:
   workflow_dispatch:
