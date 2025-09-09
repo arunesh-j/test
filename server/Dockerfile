@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 python:3.11@sha256:eb79d3fc1b3d3991133634f12cb58c13e27a1abfe51f1c7ee03f6911bca5d412 as builder
+FROM python:3.11@sha256:eb79d3fc1b3d3991133634f12cb58c13e27a1abfe51f1c7ee03f6911bca5d412 AS builder
 
 # Installing browsers and utilities
 RUN apt-get update && \
@@ -9,23 +9,22 @@ RUN apt-get update && \
 RUN useradd -ms /bin/sh appuser
 USER appuser
 WORKDIR /server
-RUN pip3 install --user pipenv setuptools wheel
-
-
+RUN pip3 install --user setuptools wheel
 
 ENV PATH="/home/appuser/.local/bin:${PATH}"
 ENV DD_TRACE_SAMPLING_RULES='[{"resource": "/healthz", "sample_rate": 0.0}]'
 ENV DD_PATCH_MODULES="openai:false"
 
-COPY --chown=appuser:appuser server/Pipfile* /server/
+COPY --chown=appuser:appuser requirements.txt /server/
 
-RUN pipenv requirements > requirements.txt
 RUN pip install --user -r requirements.txt
-RUN pip install --user pdfservices-sdk=="4.0.0" # Note: downgrade requests module
-RUN pip install PyMuPDF=="1.24.5"
+RUN pip install --user pdfservices-sdk=="4.0.0"
+RUN pip install --user PyMuPDF=="1.24.5"
 
+# Install spacy language model after spacy is installed
 RUN python -m spacy download en_core_web_sm
-COPY --chown=appuser:appuser server /server
+
+COPY --chown=appuser:appuser . /server
 
 # Compile Python files to bytecode
 RUN python -m compileall -b /server
