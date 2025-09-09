@@ -9,11 +9,11 @@ on:
         default: ""
 
 env:
-  ACCOUNT_ID: 860366539314
-  APP_NAME: server
-  CLUSTER_NAME: test-cluster
+  ACCOUNT_ID: 941614911918
+  APP_NAME: server 
+  CLUSTER_NAME: dont-pause
   ECR_REGISTRY: zop-dev
-  NAMESPACE: alltius-app-stage
+  NAMESPACE: workflow-test   
   REGION: ap-south-1
 
 permissions:
