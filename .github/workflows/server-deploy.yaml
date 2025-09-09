@@ -35,23 +35,23 @@ jobs:
           ref: ${{ github.event.inputs.stagingCommitHash }}
           fetch-depth: 2  # Fetch at least 2 commits to get the parent
 
-      - name: Check for changes in test/server
+      - name: Check for changes in server
         id: filter
         run: |
           # Get the parent commit to compare
           PARENT=$(git rev-parse ${{ github.event.inputs.stagingCommitHash }}^ || echo "")
           if [ -n "$PARENT" ]; then
-            CHANGED=$(git diff --name-only $PARENT ${{ github.event.inputs.stagingCommitHash }} | grep '^test/server/' || true)
+            CHANGED=$(git diff --name-only $PARENT ${{ github.event.inputs.stagingCommitHash }} | grep '^server/' || true)
           else
             # First commit edge case
-            CHANGED=$(git ls-tree --name-only -r ${{ github.event.inputs.stagingCommitHash }} | grep '^test/server/' || true)
+            CHANGED=$(git ls-tree --name-only -r ${{ github.event.inputs.stagingCommitHash }} | grep '^server/' || true)
           fi
 
           if [ -n "$CHANGED" ]; then
-            echo "Changes detected in test/server"
+            echo "Changes detected in server/"
             echo "should_run=true" >> "$GITHUB_OUTPUT"
           else
-            echo "No relevant changes in test/server"
+            echo "No relevant changes in server/"
             echo "should_run=false" >> "$GITHUB_OUTPUT"
           fi
 
@@ -84,8 +84,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          context: ./test/server
-          file: ./test/server/Dockerfile
+          context: ./server
+          file: ./server/Dockerfile
           tags: ${{ env.ACCOUNT_ID }}.dkr.ecr.${{ env.REGION }}.amazonaws.com/${{ env.ECR_REGISTRY }}:${{ env.APP_NAME }}-${{ github.event.inputs.stagingCommitHash }}
 
       - id: output-image
