@@ -29,10 +29,11 @@ jobs:
     outputs:
       should_run: ${{ steps.filter.outputs.should_run }}
     steps:
-      - name: Checkout specific commit
+      - name: Checkout specific commit with history
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.stagingCommitHash }}
+          fetch-depth: 2  # Fetch at least 2 commits to get the parent
 
       - name: Check for changes in test/server
         id: filter
