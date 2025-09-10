@@ -4,7 +4,7 @@ import os
 import platform
 
 app = FastAPI(
-    title="Docker Test2 Server",
+    title="Docker Test Server",
     description="A FastAPIs server for testing Docker deployment",
     version="1.0.0"
 )
